@@ -1,8 +1,5 @@
-#include <opencv2/imgproc.hpp>
 #include "seeker.h"
 
-#define THICKNESS 3
-#define COLOR Scalar(0,0,255)
 using namespace std;
 using namespace cv;
 
@@ -14,11 +11,11 @@ seeker::seeker(string classifier_path){
 // Load images on memory
 void seeker::load(string data_path, string images_pattern) {
     // Find files
-    std::vector<string> im_files;
-    cv::utils::fs::glob(data_path, images_pattern, im_files);
+    std::vector<string> file_names;
+    cv::utils::fs::glob(data_path, images_pattern, file_names);
 
     // Read images
-    for(auto& file : im_files){
+    for(auto& file : file_names){
         images.push_back(imread(file));
     }
     return;

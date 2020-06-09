@@ -5,6 +5,10 @@
 #include <opencv2/objdetect.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/core/utils/filesystem.hpp>
+#include <opencv2/imgproc.hpp>
+
+#define THICKNESS 3
+#define COLOR Scalar(0,0,255)
 
 using namespace std;
 using namespace cv;

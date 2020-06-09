@@ -12,7 +12,7 @@ using namespace cv;
 class seeker{
 public:
     CascadeClassifier tree_classifier;
-    vector<Mat> src_images, dst_images;
+    vector<Mat> images, results;
 
 public:
     seeker(string classifier_path);

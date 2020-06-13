@@ -26,4 +26,8 @@ public:
     void find();
 
     vector<Mat> get_result();
+
+    void show_result();
+
+    void write_to_file();
 };

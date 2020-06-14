@@ -1,6 +1,7 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 #include "seeker.h"
+#include "preprocess.h"
 
 using namespace std;
 using namespace cv;
@@ -18,7 +19,9 @@ void seeker::load(string data_path, string images_pattern) {
 
     // Read images
     for(auto& file : file_names){
-        images.push_back(imread(file));
+        Mat image = imread(file);
+        images.push_back(image);
+        buffer.push_back(image);
     }
 
     // clear output vector
@@ -31,14 +34,15 @@ void seeker::find(){
     // skip if result is not empty
     if(!results.empty()) return;
 
-    for(auto& image : images) {
-        Mat image_gray;
-        cvtColor(image, image_gray, COLOR_BGR2GRAY);
-        equalizeHist(image_gray, image_gray);
+    preprocess(buffer);
+
+    for(int i = 0; i < images.size(); i++) {
+        Mat image = images[i];
+        Mat proc_image = buffer[i];
 
         // Detect three
         std::vector<Rect> trees;
-        tree_classifier.detectMultiScale(image_gray, trees);
+        tree_classifier.detectMultiScale(proc_image, trees);
 
         // Drawing a box for every found object
         Mat image_box = image.clone();
@@ -55,15 +59,13 @@ void seeker::find(){
 // Return output images
 vector<Mat> seeker::get_result() {
     if(results.empty())
-        throw runtime_error("You must run find() before get_result().");
+        throw runtime_error("You must run find() before.");
     return results;
 }
 
-void seeker::show_result(){
-    if(results.empty()){
-        cout<<"Nothing to show."<<endl;
-        return;
-    }
+// show results on window
+void show_result(seeker s){
+    vector<Mat> results = s.get_result();
     namedWindow("Tree Detection", WINDOW_NORMAL);
     for(auto& image : results){
         imshow("Tree Detection", image);
@@ -71,14 +73,12 @@ void seeker::show_result(){
     }
 }
 
-void seeker::write_to_file(){
-    if(results.empty()){
-        cout<<"Nothing to write on image."<<endl;
-        return;
-    }
+// write results to file
+void write_to_file(seeker s){
+    vector<Mat> results = s.get_result();
     int i = 0;
     for(auto& image : results){
-        imwrite("Tree_Detection_"+to_string(i++), image);
+        imwrite("Tree_Detection_"+to_string(i++)+".jpg", image);
     }
 
 }

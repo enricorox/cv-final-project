@@ -14,9 +14,9 @@ using namespace std;
 using namespace cv;
 
 class seeker{
-public:
+private:
     CascadeClassifier tree_classifier;
-    vector<Mat> images, results;
+    vector<Mat> images, buffer, results;
 
 public:
     seeker(string classifier_path);
@@ -26,8 +26,9 @@ public:
     void find();
 
     vector<Mat> get_result();
-
-    void show_result();
-
-    void write_to_file();
 };
+
+// Auxiliary functions
+void show_result(seeker s);
+
+void write_to_file(seeker s);

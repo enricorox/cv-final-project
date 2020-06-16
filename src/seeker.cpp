@@ -21,7 +21,7 @@ void seeker::load(string data_path, string images_pattern) {
     for(auto& file : file_names){
         Mat image = imread(file);
         images.push_back(image);
-        buffer.push_back(image);
+        buffer.push_back(image.clone());
     }
 
     // clear output vector

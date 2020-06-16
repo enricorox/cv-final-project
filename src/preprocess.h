@@ -9,12 +9,30 @@ using namespace std;
 void preprocess(vector<Mat>& buffer){
     vector<Mat> res;
     for(auto& image : buffer) {
-        Mat image_gray;
-        cvtColor(image, image_gray, COLOR_BGR2GRAY);
+        /*
+        // select bluish stuff
+        Mat mask;
+        if(image.empty()) cout<<"image is empty!"<<endl;
+        cvtColor(image, image, COLOR_BGR2HSV);
+        // need to rescale coordinates: Hue go from 0 to 179 here
+        inRange(image, Scalar(140*179/360,0,0), Scalar(350*179/360,255,255), mask);
+
+        // select V channel i.e. grayscale
+        Mat channels[3];
+        split(image, channels);
+        Mat image_gray = channels[2];
+
+        // apply mask
+        bitwise_or(image_gray, mask, image_gray);
+
+
+        // equalize
         equalizeHist(image_gray, image_gray);
         res.push_back(image_gray);
+        */
+        medianBlur(image, image, 11);
     }
 
-    buffer = res;
+    //buffer = res;
 }
 

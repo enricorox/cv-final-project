@@ -2,20 +2,23 @@
 #include <string>
 #include "preprocess.h"
 
+// here there are the following dirs: positive, negative, train-data (empty), visualization (empty)
+// and following files: bg.txt, info.dat
 #define TRAIN_PATH "/home/enrico/_code_/final-project/cv-final-project/data/train/"
 #define PATTERN "*.jpg"
 
 #define COPY_COMMAND "cp -rv " TRAIN_PATH "* ."
-#define VEC_FILE_COMMAND "opencv_createsamples -info info.dat -vec trees.vec -w %d -h %d"
-#define TRAIN_COMMAND "opencv_traincascade -data train-data -vec trees.vec -bg bg.txt -w %d -h %d -numPos %d -numNeg %d -numStages %d"
-#define COPY_XML_COMMAND "cp -v train-data/cascade.xml " TRAIN_PATH
-#define CLEAN_COMMAND "rm -rf positive negative train-data visualization tree.vec bg.txt info.dat"
+#define CREATE_VEC_COMMAND "opencv_createsamples -info info.dat -vec trees.vec -w %d -h %d -num %d"
+#define TRAIN_COMMAND "opencv_traincascade -data train-data -vec trees.vec -bg bg.txt -w %d -h %d -numPos %d -numNeg %d -numStages %d -maxFalseAlarmRate %f"
+#define COPY_XML_COMMAND "cp -v train-data/cascade.xml " TRAIN_PATH "../"
+#define CLEAN_COMMAND "rm -rfv positive negative train-data visualization trees.vec bg.txt info.dat"
 
-#define WIDTH 48
+#define WIDTH 64
 #define HEIGHT 64
-#define NEG 12
-#define POS 56
-#define STAGES 30
+#define NEG 59
+#define POS 93
+#define STAGES 18
+#define MAX_FA_RATE 0.27
 
 int main(){
     system(COPY_COMMAND);
@@ -35,11 +38,11 @@ int main(){
         vector<Mat> buffer;
         for (auto &file : file_names) {
             Mat image = imread(file);
-            //cout<<"Reading file: "<<file<<endl;
-            if(image.empty()) cout<<"File is empty?"<<endl;
+            if(image.empty()) throw runtime_error("Image "+file+" is empty.");
             buffer.push_back(image);
         }
 
+        cout<<"Processing "<<dir<<" images..."<<endl;
         // modify images
         preprocess(buffer);
 
@@ -53,15 +56,16 @@ int main(){
     cout<<endl<<"PACKING IN A SINGLE VEC FILE"<<endl;
     // create vec file
     char vec_file_command[256];
-    sprintf(vec_file_command, VEC_FILE_COMMAND, WIDTH, HEIGHT);
+    sprintf(vec_file_command, CREATE_VEC_COMMAND, WIDTH, HEIGHT, POS);
     system(vec_file_command);
 
     cout<<endl<<"TRAINING THE CLASSIFIER"<<endl;
     // train classifier
     char train_command[256];
-    sprintf(train_command, TRAIN_COMMAND, WIDTH, HEIGHT, POS, NEG, STAGES);
+    sprintf(train_command, TRAIN_COMMAND, WIDTH, HEIGHT, POS, NEG, STAGES, MAX_FA_RATE);
     system(train_command);
 
     system(COPY_XML_COMMAND);
     system(CLEAN_COMMAND);
+    return 0;
 }

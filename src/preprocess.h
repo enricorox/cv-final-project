@@ -3,11 +3,12 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 
+#define KSIZE 13
+
 using namespace cv;
 using namespace std;
 
 void preprocess(vector<Mat>& buffer){
-    vector<Mat> res;
     for(auto& image : buffer) {
         /*
         // select bluish stuff
@@ -30,9 +31,7 @@ void preprocess(vector<Mat>& buffer){
         equalizeHist(image_gray, image_gray);
         res.push_back(image_gray);
         */
-        medianBlur(image, image, 11);
+        medianBlur(image, image, KSIZE);
     }
-
-    //buffer = res;
 }
 

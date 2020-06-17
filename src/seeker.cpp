@@ -1,5 +1,3 @@
-#include <opencv2/highgui.hpp>
-#include <iostream>
 #include "seeker.h"
 #include "preprocess.h"
 
@@ -20,6 +18,7 @@ void seeker::load(string data_path, string images_pattern) {
     // Read images
     for(auto& file : file_names){
         Mat image = imread(file);
+        if(image.empty()) throw runtime_error("Image "+file+" is empty.");
         images.push_back(image);
         buffer.push_back(image.clone());
     }
@@ -40,9 +39,12 @@ void seeker::find(){
         Mat image = images[i];
         Mat proc_image = buffer[i];
 
-        // Detect three
+        imwrite("Preprocess_"+to_string(i)+".jpg", proc_image);
+
+        // Detect tree
         std::vector<Rect> trees;
-        tree_classifier.detectMultiScale(proc_image, trees);
+        Size2i minSize(MIN_SIZE_RATIO*image.cols, MIN_SIZE_RATIO*image.rows);
+        tree_classifier.detectMultiScale(proc_image, trees, SCALE_FACTOR, MIN_NEIGHBOUR, FLAGS, minSize);
 
         // Drawing a box for every found object
         Mat image_box = image.clone();

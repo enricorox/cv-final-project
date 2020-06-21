@@ -1,5 +1,10 @@
 #include <iostream>
 #include <string>
+
+#include <opencv2/core.hpp>
+#include <opencv2/core/utils/filesystem.hpp>
+#include <opencv2/imgcodecs.hpp>
+
 #include "preprocess.h"
 
 // here there are the following dirs: positive, negative, train-data (empty), visualization (empty)
@@ -17,8 +22,8 @@
 #define HEIGHT 64
 #define NEG 59
 #define POS 93
-#define STAGES 18
-#define MAX_FA_RATE 0.27
+#define STAGES 24//18
+#define MAX_FA_RATE 0.33//0.27
 
 int main(){
     system(COPY_COMMAND);

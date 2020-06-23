@@ -1,4 +1,4 @@
 build/*
-data/*
+data/train/visualization/*
 src/cmake-build-debug/*
 .idea/*

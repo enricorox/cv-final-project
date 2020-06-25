@@ -26,19 +26,17 @@
 #define MAX_FA_RATE 0.33//0.27
 
 int main(){
+    // copy the dataset on the CWD
     system(COPY_COMMAND);
-    // Find positive images
-    string dirs[] = {"positive", "negative"};
 
     // process positive and negative images
+    string dirs[] = {"positive", "negative"};
     for(auto& dir : dirs) {
         std::vector<string> file_names;
         cv::utils::fs::glob(dir, PATTERN, file_names);
 
-        if(file_names.empty()){
-            cout<<"file vector is empty."<<endl;
-            exit(-1);
-        }
+        if(file_names.empty())
+            throw runtime_error("Cannot find images on dir "+dir+".");
         // Read images
         vector<Mat> buffer;
         for (auto &file : file_names) {
@@ -47,11 +45,11 @@ int main(){
             buffer.push_back(image);
         }
 
-        cout<<"Processing "<<dir<<" images..."<<endl;
+        cout<<"Processing images on "<<dir<<endl;
         // modify images
         preprocess(buffer);
 
-        // write to file
+        // overwrite the image
         int i = 0;
         for (auto &image : buffer) {
             imwrite(file_names.at(i++), image);
@@ -70,7 +68,9 @@ int main(){
     sprintf(train_command, TRAIN_COMMAND, WIDTH, HEIGHT, POS, NEG, STAGES, MAX_FA_RATE);
     system(train_command);
 
+    // copy the cascade.xml for use with find-tree.cpp
     system(COPY_XML_COMMAND);
+    // remove everything copied before
     system(CLEAN_COMMAND);
     return 0;
 }

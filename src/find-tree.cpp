@@ -1,5 +1,6 @@
 #include "seeker.h"
 
+// this directory must contain the test folder and the cascade classifier
 #define DATA_PATH "/home/enrico/Documenti/UNIPD/magistrale/Corsi/ComputerVision/code/final-project/cv-final-project/data/"
 #define PATTERN "*.jpg"
 #define CLASSIFIER_PATH DATA_PATH "cascade.xml"

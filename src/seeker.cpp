@@ -39,7 +39,8 @@ void seeker::find(){
         Mat image = images[i];
         Mat proc_image = buffer[i];
 
-        imwrite("Preprocess_"+to_string(i)+".jpg", proc_image);
+        // save processed image
+        //imwrite("Preprocess_"+to_string(i)+".jpg", proc_image);
 
         // Detect tree
         std::vector<Rect> trees;
